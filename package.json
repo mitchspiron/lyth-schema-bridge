@@ -1,0 +1,20 @@
+{
+  "name": "lyth-schema-bridge",
+  "version": "1.0.0",
+  "description": "Schema Bridge generates Prisma, Zod, OpenAPI, and REST/GraphQL CRUD code from a single model definition, giving you consistent, clean-architecture backends with minimal effort.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mitchspiron/lyth-schema-bridge.git"
+  },
+  "keywords": [],
+  "author": "Mitch Spiron R.",
+  "license": "MIT",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/mitchspiron/lyth-schema-bridge/issues"
+  },
+  "homepage": "https://github.com/mitchspiron/lyth-schema-bridge#readme"
+}
