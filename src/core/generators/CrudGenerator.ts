@@ -234,6 +234,6 @@ export class CrudGenerator {
       date: "Date",
       json: "any",
     };
-    return mapping[fieldType] || "any";
+    return mapping[fieldType.toLowerCase()] || "string";
   }
 }
