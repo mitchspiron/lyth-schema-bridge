@@ -252,4 +252,183 @@ export class AuthService {
   }
 }`;
   }
+
+  /**
+   * Generates authentication controller
+   */
+  static generateAuthController(): string {
+    return `import { Request, Response, NextFunction } from 'express';
+import { AuthService } from '../../application/services/AuthService';
+import { z } from 'zod';
+
+// Validation schemas
+const RegisterSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  name: z.string().min(2, 'Name must be at least 2 characters')
+});
+
+const LoginSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(1, 'Password is required')
+});
+
+const ForgotPasswordSchema = z.object({
+  email: z.string().email('Invalid email format')
+});
+
+const ResetPasswordSchema = z.object({
+  token: z.string().min(1, 'Token is required'),
+  password: z.string().min(8, 'Password must be at least 8 characters')
+});
+
+/**
+ * Authentication Controller
+ * Handles HTTP requests for authentication
+ */
+export class AuthController {
+  constructor(private authService: AuthService) {}
+
+  /**
+   * POST /api/auth/register
+   * Register a new user
+   */
+  register = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validation = RegisterSchema.safeParse(req.body);
+      
+      if (!validation.success) {
+        return res.status(400).json({ 
+          error: 'Validation failed',
+          details: validation.error.errors 
+        });
+      }
+
+      const result = await this.authService.register(
+        validation.data.email,
+        validation.data.password,
+        validation.data.name
+      );
+      
+      res.status(201).json(result);
+    } catch (error: any) {
+      if (error.message === 'User already exists') {
+        res.status(400).json({ error: error.message });
+      } else {
+        next(error);
+      }
+    }
+  };
+
+  /**
+   * POST /api/auth/login
+   * Login user
+   */
+  login = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validation = LoginSchema.safeParse(req.body);
+      
+      if (!validation.success) {
+        return res.status(400).json({ 
+          error: 'Validation failed',
+          details: validation.error.errors 
+        });
+      }
+
+      const result = await this.authService.login(
+        validation.data.email,
+        validation.data.password
+      );
+      
+      res.json(result);
+    } catch (error: any) {
+      res.status(401).json({ error: error.message });
+    }
+  };
+
+  /**
+   * GET /api/auth/verify-email
+   * Verify email with token
+   */
+  verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { token } = req.query;
+      
+      if (!token || typeof token !== 'string') {
+        return res.status(400).json({ error: 'Token is required' });
+      }
+
+      const result = await this.authService.verifyEmail(token);
+      res.json(result);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  };
+
+  /**
+   * POST /api/auth/forgot-password
+   * Request password reset
+   */
+  forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validation = ForgotPasswordSchema.safeParse(req.body);
+      
+      if (!validation.success) {
+        return res.status(400).json({ 
+          error: 'Validation failed',
+          details: validation.error.errors 
+        });
+      }
+
+      const result = await this.authService.forgotPassword(validation.data.email);
+      res.json(result);
+    } catch (error: any) {
+      next(error);
+    }
+  };
+
+  /**
+   * POST /api/auth/reset-password
+   * Reset password with token
+   */
+  resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const validation = ResetPasswordSchema.safeParse(req.body);
+      
+      if (!validation.success) {
+        return res.status(400).json({ 
+          error: 'Validation failed',
+          details: validation.error.errors 
+        });
+      }
+
+      const result = await this.authService.resetPassword(
+        validation.data.token,
+        validation.data.password
+      );
+      
+      res.json(result);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  };
+
+  /**
+   * GET /api/auth/profile
+   * Get user profile (protected)
+   */
+  getProfile = async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
+    try {
+      if (!req.user || !req.user.userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      const profile = await this.authService.getProfile(req.user.userId);
+      res.json(profile);
+    } catch (error: any) {
+      next(error);
+    }
+  };
+}`;
+  }
 }
