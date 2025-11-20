@@ -431,4 +431,119 @@ export class AuthController {
   };
 }`;
   }
+
+  /**
+   * Generates authentication middleware
+   */
+  static generateAuthMiddleware(): string {
+    return `import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+
+/**
+ * Authentication Middleware
+ * Verifies JWT token and adds user to request
+ */
+export const authMiddleware = (
+  req: Request & { user?: any }, 
+  res: Response, 
+  next: NextFunction
+) => {
+  try {
+    // Get token from header
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader) {
+      return res.status(401).json({ error: 'No token provided' });
+    }
+
+    // Extract token
+    const token = authHeader.split(' ')[1];
+    
+    if (!token) {
+      return res.status(401).json({ error: 'Invalid token format' });
+    }
+
+    // Verify token
+    const decoded = jwt.verify(
+      token, 
+      process.env.JWT_SECRET || 'your-secret-key'
+    );
+
+    // Add user to request
+    req.user = decoded;
+    
+    next();
+  } catch (error) {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+};
+
+/**
+ * Optional auth middleware
+ * Doesn't fail if no token, just adds user if valid token exists
+ */
+export const optionalAuthMiddleware = (
+  req: Request & { user?: any }, 
+  res: Response, 
+  next: NextFunction
+) => {
+  try {
+    const authHeader = req.headers.authorization;
+    
+    if (authHeader) {
+      const token = authHeader.split(' ')[1];
+      
+      if (token) {
+        const decoded = jwt.verify(
+          token, 
+          process.env.JWT_SECRET || 'your-secret-key'
+        );
+        req.user = decoded;
+      }
+    }
+    
+    next();
+  } catch (error) {
+    // Continue without user
+    next();
+  }
+};`;
+  }
+
+  /**
+   * Generates authentication routes
+   */
+  static generateAuthRoutes(): string {
+    return `import { Router } from 'express';
+import { AuthController } from '../controllers/AuthController';
+import { authMiddleware } from '../middlewares/auth.middleware';
+
+/**
+ * Authentication Routes
+ * Defines HTTP routes for authentication
+ */
+export function createAuthRoutes(controller: AuthController): Router {
+  const router = Router();
+
+  // POST /auth/register - Register new user
+  router.post('/register', controller.register);
+
+  // POST /auth/login - Login user
+  router.post('/login', controller.login);
+
+  // GET /auth/verify-email - Verify email
+  router.get('/verify-email', controller.verifyEmail);
+
+  // POST /auth/forgot-password - Request password reset
+  router.post('/forgot-password', controller.forgotPassword);
+
+  // POST /auth/reset-password - Reset password
+  router.post('/reset-password', controller.resetPassword);
+
+  // GET /auth/profile - Get user profile (protected)
+  router.get('/profile', authMiddleware, controller.getProfile);
+
+  return router;
+}`;
+  }
 }
