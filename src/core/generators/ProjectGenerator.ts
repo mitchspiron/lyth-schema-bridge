@@ -1,11 +1,14 @@
 import { FileWriter } from "../utils/FileWriter";
 import { Logger } from "../utils/Logger";
 import * as path from "path";
-import * as fs from 'fs';
+import * as fs from "fs";
 
 import { ProjectConfig } from "../parser/types";
 import { SchemaParser } from "../parser/SchemaParser";
 import { AuthGenerator } from "./AuthGenerator";
+import { PrismaGenerator } from "./PrismaGenerator";
+import { ZodGenerator } from "./ZodGenerator";
+import { OpenAPIGenerator } from "./OpenAPIGenerator";
 
 export class ProjectGenerator {
   /**
@@ -114,5 +117,47 @@ export class ProjectGenerator {
       const fullPath = path.join(baseDir, dir);
       FileWriter.createDirectory(fullPath);
     });
+  }
+
+  /**
+   * Generates Prisma schema
+   */
+  private static async generatePrismaSchema(
+    config: ProjectConfig,
+    outputDir: string
+  ): Promise<void> {
+    const schema = PrismaGenerator.generate(config);
+    const filePath = path.join(outputDir, "prisma", "schema.prisma");
+    FileWriter.writeFile(filePath, schema);
+  }
+
+  /**
+   * Generates Zod schemas
+   */
+  private static async generateZodSchemas(
+    config: ProjectConfig,
+    outputDir: string
+  ): Promise<void> {
+    config.models.forEach((model) => {
+      const schema = ZodGenerator.generateDTOFile(model);
+      const filePath = path.join(
+        outputDir,
+        "src/application/dto",
+        `${model.name.toLocaleLowerCase()}.dto.ts`
+      );
+      FileWriter.writeFile(filePath, schema);
+    });
+  }
+
+  /**
+   * Generates OpenAPI specification
+   */
+  private static async generateOpenAPISpec(
+    config: ProjectConfig,
+    outputDir: string
+  ): Promise<void> {
+    const spec = OpenAPIGenerator.generate(config);
+    const filePath = path.join(outputDir, "src/docs", "openapi.json");
+    FileWriter.writeFile(filePath, spec);
   }
 }
