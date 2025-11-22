@@ -9,6 +9,7 @@ import { AuthGenerator } from "./AuthGenerator";
 import { PrismaGenerator } from "./PrismaGenerator";
 import { ZodGenerator } from "./ZodGenerator";
 import { OpenAPIGenerator } from "./OpenAPIGenerator";
+import { CrudGenerator } from "./CrudGenerator";
 
 export class ProjectGenerator {
   /**
@@ -159,5 +160,60 @@ export class ProjectGenerator {
     const spec = OpenAPIGenerator.generate(config);
     const filePath = path.join(outputDir, "src/docs", "openapi.json");
     FileWriter.writeFile(filePath, spec);
+  }
+
+  /**
+   * Generates CRUD layer
+   */
+  private static async generateCrudLayer(
+    config: ProjectConfig,
+    outputDir: string
+  ): Promise<void> {
+    config.models.forEach((model) => {
+      // Skip User model if auth is enabled (handled separately)
+      if (model.name === "User" && config.authentication) {
+        return;
+      }
+
+      // Generate repository interface
+      const repository = CrudGenerator.generateRepository(model);
+      FileWriter.writeFile(
+        path.join(
+          outputDir,
+          "src/domain/repositories",
+          `${model.name}Repository.ts`
+        ),
+        repository
+      );
+
+      // Generates repository implementation
+      const repositoryImpl = CrudGenerator.generateRepositoryImpl(model);
+      FileWriter.writeFile(
+        path.join(
+          outputDir,
+          "src/infrastructure/database/repositories",
+          `${model.name}RepositoryImpl.ts`
+        ),
+        repositoryImpl
+      );
+
+      // Generate use cases
+      const useCases = CrudGenerator.generateUseCases(model);
+      FileWriter.writeFile(
+        path.join(
+          outputDir,
+          "src/application/use-cases",
+          `${model.name}UseCases.ts`
+        ),
+        useCases
+      );
+
+      // Generate domain entity
+      const entity = CrudGenerator.generateEntity(model);
+      FileWriter.writeFile(
+        path.join(outputDir, "src/domain/entities", `${model.name}Entity.ts`),
+        entity
+      );
+    });
   }
 }

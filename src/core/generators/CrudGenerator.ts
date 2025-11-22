@@ -42,7 +42,7 @@ export class CrudGenerator {
   /**
    * Generate primsa implementation of repository
    */
-  static generateRespositoryImpl(model: SchemaModel): string {
+  static generateRepositoryImpl(model: SchemaModel): string {
     const modelName = model.name;
     const modelLower = modelName.toLowerCase();
 
@@ -112,7 +112,7 @@ export class CrudGenerator {
   /**
    * Generates use case class for the given model
    */
-  static generateUseCase(model: SchemaModel): string {
+  static generateUseCases(model: SchemaModel): string {
     const modelName = model.name;
     const modelLower = modelName.toLowerCase();
 
