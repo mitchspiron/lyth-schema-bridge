@@ -1,4 +1,7 @@
+import { FileWriter } from "../utils/FileWriter";
 import { Logger } from "../utils/Logger";
+import * as path from "path";
+import * as fs from 'fs';
 
 import { ProjectConfig } from "../parser/types";
 import { SchemaParser } from "../parser/SchemaParser";
@@ -73,5 +76,43 @@ export class ProjectGenerator {
 
     // 12. Display instructions
     this.displayNextSteps(config, outputDir);
+  }
+
+  /**
+   * Creates directories structure
+   */
+  private static createDirectoryStructure(baseDir: string): void {
+    const dirs = [
+      // Prisma
+      "prisma",
+
+      // Domain layer
+      "src/domain/entities",
+      "src/domain/repositories",
+
+      // Application layer
+      "src/application/use-cases",
+      "src/application/dto",
+      "src/application/services",
+
+      // Infrastructure layer
+      "src/infrastructure/database/repositories",
+      "src/infrastructure/http/express",
+      "src/infrastructure/http/graphql",
+
+      // Presentation layer
+      "src/presentation/rest/controllers",
+      "src/presentation/rest/routes",
+      "src/presentation/rest/middlewares",
+      "src/presentation/graphql/resolvers",
+
+      // Documentation
+      "src/docs",
+    ];
+
+    dirs.forEach((dir) => {
+      const fullPath = path.join(baseDir, dir);
+      FileWriter.createDirectory(fullPath);
+    });
   }
 }

@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/mitchspiron/lyth-schema-bridge/issues"
   },
-  "homepage": "https://github.com/mitchspiron/lyth-schema-bridge#readme"
+  "homepage": "https://github.com/mitchspiron/lyth-schema-bridge#readme",
+  "devDependencies": {
+    "@types/node": "^24.10.1"
+  }
 }
