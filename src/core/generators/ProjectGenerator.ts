@@ -146,7 +146,7 @@ export class ProjectGenerator {
       const filePath = path.join(
         outputDir,
         "src/application/dto",
-        `${model.name.toLocaleLowerCase()}.dto.ts`
+        `${model.name.toLowerCase()}.dto.ts`
       );
       FileWriter.writeFile(filePath, schema);
     });
@@ -297,7 +297,7 @@ export class ProjectGenerator {
         path.join(
           outputDir,
           "src/presentation/graphql/resolvers",
-          `${model.name.toLocaleLowerCase()}.resolvers.ts`
+          `${model.name.toLowerCase()}.resolvers.ts`
         ),
         resolvers
       );
