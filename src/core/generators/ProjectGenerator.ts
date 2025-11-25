@@ -10,6 +10,7 @@ import { PrismaGenerator } from "./PrismaGenerator";
 import { ZodGenerator } from "./ZodGenerator";
 import { OpenAPIGenerator } from "./OpenAPIGenerator";
 import { CrudGenerator } from "./CrudGenerator";
+import { RestApiGenerator } from "./RestApiGenerator";
 
 export class ProjectGenerator {
   /**
@@ -208,11 +209,68 @@ export class ProjectGenerator {
         useCases
       );
 
-      // Generate domain entity
+      // Generate domain entity (optional)
       const entity = CrudGenerator.generateEntity(model);
       FileWriter.writeFile(
         path.join(outputDir, "src/domain/entities", `${model.name}Entity.ts`),
         entity
+      );
+    });
+  }
+
+  /**
+   * Generates REST API
+   */
+  private static async generateRestApi(
+    config: ProjectConfig,
+    outputDir: string
+  ): Promise<void> {
+    config.models.forEach((model) => {
+      if (model.name === "User" && config.authentication) {
+        return;
+      }
+
+      // Generates controller
+      const controller = RestApiGenerator.generateController(model);
+      FileWriter.writeFile(
+        path.join(
+          outputDir,
+          "src/presentation/rest/controllers",
+          `${model.name}Controller.ts`
+        ),
+        controller
+      );
+
+      // Generates routes
+      const routes = RestApiGenerator.generateRoutes(model);
+      FileWriter.writeFile(
+        path.join(
+          outputDir,
+          "src/presentation/rest/routes",
+          `${model.name.toLowerCase()}.routes.ts`
+        ),
+        routes
+      );
+
+      // Generates Express app
+      const app = RestApiGenerator.generateExpressApp(
+        config.models,
+        config.authentication
+      );
+      FileWriter.writeFile(
+        path.join(outputDir, "src/presentation/rest", "app.ts"),
+        app
+      );
+
+      // Generates middlewares
+      const errorMiddleware = RestApiGenerator.generateErrorMiddleware();
+      FileWriter.writeFile(
+        path.join(
+          outputDir,
+          "src/presentation/rest/middlewares",
+          "error.middleware.ts"
+        ),
+        errorMiddleware
       );
     });
   }
