@@ -313,4 +313,48 @@ export class ProjectGenerator {
       apolloServer
     );
   }
+
+  /**
+   * Generates authentication system
+   */
+  private static async generateAuthSystem(
+    config: ProjectConfig,
+    outputDir: string
+  ): Promise<void> {
+    // Generate auth service
+    const authService = AuthGenerator.generateAuthService();
+    FileWriter.writeFile(
+      path.join(outputDir, "src/application/services", "AuthService.ts"),
+      authService
+    );
+
+    // Generate auth controller
+    const authController = AuthGenerator.generateAuthController();
+    FileWriter.writeFile(
+      path.join(
+        outputDir,
+        "src/presentation/rest/controllers",
+        "AuthController.ts"
+      ),
+      authController
+    );
+
+    // Generate auth middleware
+    const authMiddleware = AuthGenerator.generateAuthMiddleware();
+    FileWriter.writeFile(
+      path.join(
+        outputDir,
+        "src/presentation/rest/middlewares",
+        "auth.middleware.ts"
+      ),
+      authMiddleware
+    );
+
+    // Generate auth routes
+    const authRoutes = AuthGenerator.generateAuthRoutes();
+    FileWriter.writeFile(
+      path.join(outputDir, "src/presentation/rest/routes", "auth.routes.ts"),
+      authRoutes
+    );
+  }
 }
