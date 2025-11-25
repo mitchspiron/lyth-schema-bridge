@@ -226,9 +226,7 @@ export class ProjectGenerator {
     outputDir: string
   ): Promise<void> {
     config.models.forEach((model) => {
-      if (model.name === "User" && config.authentication) {
-        return;
-      }
+      if (model.name === "User" && config.authentication) return;
 
       // Generates controller
       const controller = RestApiGenerator.generateController(model);
@@ -251,27 +249,31 @@ export class ProjectGenerator {
         ),
         routes
       );
-
-      // Generates Express app
-      const app = RestApiGenerator.generateExpressApp(
-        config.models,
-        config.authentication
-      );
-      FileWriter.writeFile(
-        path.join(outputDir, "src/presentation/rest", "app.ts"),
-        app
-      );
-
-      // Generates middlewares
-      const errorMiddleware = RestApiGenerator.generateErrorMiddleware();
-      FileWriter.writeFile(
-        path.join(
-          outputDir,
-          "src/presentation/rest/middlewares",
-          "error.middleware.ts"
-        ),
-        errorMiddleware
-      );
     });
+
+    // Generates Express app
+    const app = RestApiGenerator.generateExpressApp(
+      config.models,
+      config.authentication
+    );
+    FileWriter.writeFile(
+      path.join(outputDir, "src/presentation/rest", "app.ts"),
+      app
+    );
+
+    // Generates middlewares
+    const errorMiddleware = RestApiGenerator.generateErrorMiddleware();
+    FileWriter.writeFile(
+      path.join(
+        outputDir,
+        "src/presentation/rest/middlewares",
+        "error.middleware.ts"
+      ),
+      errorMiddleware
+    );
   }
+
+  /**
+   * Generates GraphQL API
+   */
 }
