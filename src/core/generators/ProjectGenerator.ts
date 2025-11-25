@@ -11,6 +11,7 @@ import { ZodGenerator } from "./ZodGenerator";
 import { OpenAPIGenerator } from "./OpenAPIGenerator";
 import { CrudGenerator } from "./CrudGenerator";
 import { RestApiGenerator } from "./RestApiGenerator";
+import { GraphQLGenerator } from "./GraphQLGenerator";
 
 export class ProjectGenerator {
   /**
@@ -226,9 +227,7 @@ export class ProjectGenerator {
     outputDir: string
   ): Promise<void> {
     config.models.forEach((model) => {
-      if (model.name === "User" && config.authentication) {
-        return;
-      }
+      if (model.name === "User" && config.authentication) return;
 
       // Generates controller
       const controller = RestApiGenerator.generateController(model);
@@ -251,27 +250,67 @@ export class ProjectGenerator {
         ),
         routes
       );
+    });
 
-      // Generates Express app
-      const app = RestApiGenerator.generateExpressApp(
-        config.models,
-        config.authentication
-      );
-      FileWriter.writeFile(
-        path.join(outputDir, "src/presentation/rest", "app.ts"),
-        app
-      );
+    // Generates Express app
+    const app = RestApiGenerator.generateExpressApp(
+      config.models,
+      config.authentication
+    );
+    FileWriter.writeFile(
+      path.join(outputDir, "src/infrastructure/http/express", "app.ts"),
+      app
+    );
 
-      // Generates middlewares
-      const errorMiddleware = RestApiGenerator.generateErrorMiddleware();
+    // Generates middlewares
+    const errorMiddleware = RestApiGenerator.generateErrorMiddleware();
+    FileWriter.writeFile(
+      path.join(
+        outputDir,
+        "src/presentation/rest/middlewares",
+        "error.middleware.ts"
+      ),
+      errorMiddleware
+    );
+  }
+
+  /**
+   * Generates GraphQL API
+   */
+  private static async generateGraphQLApi(
+    config: ProjectConfig,
+    outputDir: string
+  ): Promise<void> {
+    // Generates type definitions
+    const typeDefs = GraphQLGenerator.generateTypeDefs(config.models);
+    FileWriter.writeFile(
+      path.join(outputDir, "src/presentation/graphql", "typeDefs.ts"),
+      typeDefs
+    );
+
+    // Generates resolvers
+    config.models.forEach((model) => {
+      if (model.name === "User" && config.authentication) return;
+
+      const resolvers = GraphQLGenerator.generateResolvers(model);
       FileWriter.writeFile(
         path.join(
           outputDir,
-          "src/presentation/rest/middlewares",
-          "error.middleware.ts"
+          "src/presentation/graphql/resolvers",
+          `${model.name.toLocaleLowerCase()}.resolvers.ts`
         ),
-        errorMiddleware
+        resolvers
       );
     });
+
+    // Generates Apollo server
+    const apolloServer = GraphQLGenerator.generateApolloServer(
+      config.models,
+      config.authentication
+    );
+    FileWriter.writeFile(
+      path.join(outputDir, "src/infrastructure/http/graphql", "server.ts"),
+      apolloServer
+    );
   }
 }
