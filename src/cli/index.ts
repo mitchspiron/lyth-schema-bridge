@@ -5,6 +5,7 @@ import { Logger } from "../utils/Logger";
 import * as path from "path";
 import * as fs from "fs";
 import { ProjectGenerator } from "../core/generators/ProjectGenerator";
+import { InteractiveCLI } from "./InteractiveCLI";
 
 const program = new Command();
 
