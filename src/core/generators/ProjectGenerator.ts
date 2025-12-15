@@ -1,7 +1,7 @@
-import { FileWriter } from "../utils/FileWriter";
-import { Logger } from "../utils/Logger";
 import * as path from "path";
 import * as fs from "fs";
+import { Logger } from "../../utils/Logger";
+import { FileWriter } from "../../utils/FileWriter";
 
 import { ProjectConfig } from "../parser/types";
 import { SchemaParser } from "../parser/SchemaParser";
