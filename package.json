@@ -2,14 +2,46 @@
   "name": "lyth-schema-bridge",
   "version": "1.0.0",
   "description": "Schema Bridge generates Prisma, Zod, OpenAPI, and REST/GraphQL CRUD code from a single model definition, giving you consistent, clean-architecture backends with minimal effort.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "schema-bridge": "./dist/cli/index.js"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "dev": "ts-node-dev --respawn src/cli/index.ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "prepublishOnly": "npm run build",
+    "example:basic": "ts-node examples/basic.ts",
+    "example:advanced": "ts-node examples/advanced.ts"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mitchspiron/lyth-schema-bridge.git"
   },
-  "keywords": [],
+  "keywords": [
+    "schema",
+    "generator",
+    "prisma",
+    "zod",
+    "openapi",
+    "rest-api",
+    "graphql",
+    "clean-architecture",
+    "crud",
+    "typescript",
+    "code-generator",
+    "api-generator",
+    "backend",
+    "full-stack",
+    "express",
+    "apollo-server"
+  ],
   "author": "Mitch Spiron R.",
   "license": "MIT",
   "type": "commonjs",
@@ -17,11 +49,31 @@
     "url": "https://github.com/mitchspiron/lyth-schema-bridge/issues"
   },
   "homepage": "https://github.com/mitchspiron/lyth-schema-bridge#readme",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "devDependencies": {
     "@types/commander": "^2.12.0",
-    "@types/node": "^24.10.1"
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.50.0",
+    "@typescript-eslint/parser": "^8.50.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "jest": "^30.2.0",
+    "prettier": "^3.7.4",
+    "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "commander": "^14.0.2"
+  },
+  "peerDependencies": {
+    "prisma": "^7.1.0"
   }
 }
