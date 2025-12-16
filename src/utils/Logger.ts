@@ -33,7 +33,7 @@ export class Logger {
    * Generale Log
    */
   static log(message: string, level: LogLevel = LogLevel.INFO): void {
-    const timestamp = new Date().toISOString();
+    //const timestamp = new Date().toISOString();
     const prefix = this.getPrefix(level);
     console.log(`${prefix} ${message}${this.colors.reset}`);
   }

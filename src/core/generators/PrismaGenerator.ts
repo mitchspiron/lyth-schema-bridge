@@ -86,7 +86,7 @@ export class PrismaGenerator {
   /**
    * Generate a Prisma relation (if needed)
    */
-  private static generateRelation(field: SchemaField): string {
+/*   private static generateRelation(field: SchemaField): string {
     if (!field.relation) return "";
 
     const { model, type } = field.relation;
@@ -101,5 +101,5 @@ export class PrismaGenerator {
       default:
         return "";
     }
-  }
+  } */
 }
