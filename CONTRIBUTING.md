@@ -46,6 +46,13 @@ npm run build
 - Follow existing code style
 - Update documentation when needed
 
+### Code Style
+
+- Use TypeScript
+- Follow ESLint rules
+- Run `npm run lint:fix` before committing
+- Run `npm run format` to format code
+
 ## Commit Messages
 
 Use clear commit messages:
@@ -55,6 +62,40 @@ Use clear commit messages:
 - `docs: update readme`
 - `test: add tests`
 
+### Pull Request Process
+
+1. Update documentation if needed
+2. Add tests for new features
+3. Ensure all tests pass
+4. Update CHANGELOG.md
+5. Request review from maintainers
+
+## Adding New Generators
+
+To add a new generator:
+
+1. Create a new file in `src/core/generators/`
+2. Implement the generator class
+3. Export it from `src/index.ts`
+4. Add tests in `tests/`
+5. Update documentation
+
+Example:
+
+```typescript
+// src/core/generators/MyGenerator.ts
+export class MyGenerator {
+  static generate(config: ProjectConfig): string {
+    // Implementation
+  }
+}
+
+## Documentation
+
+- Update README.md for user-facing changes
+- Add JSDoc comments for public APIs
+- Update examples if needed
+
 ## Questions?
 
 Feel free to open an issue for any questions or reach out to the maintainers.
@@ -62,3 +103,6 @@ Feel free to open an issue for any questions or reach out to the maintainers.
 ## License
 
 By contributing, you agree that your contributions will be licensed under the MIT License.
+```
+
+Thank you for contributing to Schema Bridge!
