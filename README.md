@@ -341,6 +341,7 @@ MIT ©
 - [Documentation](https://github.com/mitchspiron/lyth-schema-bridge)
 - [NPM Package](https://www.npmjs.com/package/@lyth/schema-bridge)
 - [Issues](https://github.com/mitchspiron/lyth-schema-bridge/issues)
+- [Changelog](CHANGELOG.md)
 
 ---
 
