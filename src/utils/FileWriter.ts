@@ -15,7 +15,7 @@ export class FileWriter {
   /**
    * Write a file with automatic formatting
    */
-  static writeFile(filePath: string, content: string, format: boolean = true): void {
+  static async writeFile(filePath: string, content: string, format: boolean = true): Promise<void> {
     // Create the parent directory if necessary
     const dir = path.dirname(filePath);
     this.createDirectory(dir);
@@ -23,7 +23,7 @@ export class FileWriter {
     // Format code if needed
     let finalContent = content;
     if (format) {
-      finalContent = CodeFormatter.formatByExtension(content, filePath);
+      finalContent = await CodeFormatter.formatByExtension(content, filePath);
       finalContent = CodeFormatter.normalizeWhitespace(finalContent);
     }
 
@@ -95,8 +95,8 @@ export class FileWriter {
   /**
    * Create a JSON file
    */
-  static writeJSON(filePath: string, data: any): void {
-    this.writeFile(filePath, JSON.stringify(data, null, 2));
+  static async writeJSON(filePath: string, data: any): Promise<void> {
+    await this.writeFile(filePath, JSON.stringify(data, null, 2));
   }
 
   /**

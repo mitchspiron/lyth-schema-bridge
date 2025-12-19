@@ -16,6 +16,7 @@
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
     "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
     "prepublishOnly": "npm run build",
     "example:basic": "ts-node examples/basic.ts",
     "example:advanced": "ts-node examples/advanced.ts"

@@ -11,6 +11,7 @@ import { OpenAPIGenerator } from './OpenAPIGenerator';
 import { CrudGenerator } from './CrudGenerator';
 import { RestApiGenerator } from './RestApiGenerator';
 import { GraphQLGenerator } from './GraphQLGenerator';
+import { CodeFormatter } from '../../utils/CodeFormatter';
 
 export class ProjectGenerator {
   /**
@@ -73,7 +74,12 @@ export class ProjectGenerator {
     await this.generateMainFile(config, outputDir);
     Logger.info('✓ Generated main entrypoint');
 
-    // 12. Display instructions
+    // 12. Format generated code
+    Logger.info('\n# Formatting generated code...');
+    await CodeFormatter.formatProject(outputDir);
+    Logger.success('✓ Code formatted successfully');
+
+    // 13. Display instructions
     this.displayNextSteps(outputDir);
   }
 
