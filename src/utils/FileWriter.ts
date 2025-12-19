@@ -1,5 +1,6 @@
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from 'fs';
+import * as path from 'path';
+import { CodeFormatter } from './CodeFormatter';
 
 export class FileWriter {
   /**
@@ -12,22 +13,29 @@ export class FileWriter {
   }
 
   /**
-   * Write a file
+   * Write a file with automatic formatting
    */
-  static writeFile(filePath: string, content: string): void {
+  static writeFile(filePath: string, content: string, format: boolean = true): void {
     // Create the parent directory if necessary
     const dir = path.dirname(filePath);
     this.createDirectory(dir);
 
+    // Format code if needed
+    let finalContent = content;
+    if (format) {
+      finalContent = CodeFormatter.formatByExtension(content, filePath);
+      finalContent = CodeFormatter.normalizeWhitespace(finalContent);
+    }
+
     // Write File
-    fs.writeFileSync(filePath, content, "utf-8");
+    fs.writeFileSync(filePath, finalContent, 'utf-8');
   }
 
   /**
    * Read file
    */
   static readFile(filePath: string): string {
-    return fs.readFileSync(filePath, "utf-8");
+    return fs.readFileSync(filePath, 'utf-8');
   }
 
   /**
