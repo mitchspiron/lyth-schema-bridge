@@ -9,8 +9,8 @@ export class RestApiGenerator {
     const modelLower = modelName.toLowerCase();
 
     return `import { Request, Response, NextFunction } from 'express';
-    import { ${modelName}UseCases } from '../../application/use-cases/${modelName}UseCases';
-    import { Create${modelName}Schema, Update${modelName}Schema } from '../../application/dto/${modelLower}.dto';
+    import { ${modelName}UseCases } from '../../../application/use-cases/${modelName}UseCases';
+    import { Create${modelName}Schema, Update${modelName}Schema } from '../../../application/dto/${modelLower}.dto';
 
     /**
      * ${modelName} Controller
