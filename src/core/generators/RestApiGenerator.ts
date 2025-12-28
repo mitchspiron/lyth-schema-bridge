@@ -286,7 +286,7 @@ export class RestApiGenerator {
                 });
 
                 // Error handler
-                app.use((err, any, req: Request, res: Response, next: NextFunction) => {
+                app.use((err: any, req: Request, res: Response, next: NextFunction) => {
                     console.error('Error:', err);
                     res.status(500).json({
                         error: 'Internal Server Error',
