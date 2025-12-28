@@ -1,11 +1,11 @@
-import { SchemaModel } from "../parser/types";
+import { SchemaModel } from '../parser/types';
 
 export class CrudGenerator {
   static generateRepository(model: SchemaModel): string {
     const modelName = model.name;
     const modelLower = modelName.toLowerCase();
 
-    return `import { ${modelName}, Create${modelName}, Update${modelName} } from '../../application/dto/${modelLower}';
+    return `import { ${modelName}, Create${modelName}, Update${modelName} } from '../../application/dto/${modelLower}.dto';
   
     /**
      * Repository interface for ${modelName}
@@ -187,25 +187,25 @@ export class CrudGenerator {
     const modelName = model.name;
 
     const fields = model.fields
-      .map((f) => {
+      .map(f => {
         const type = this.mapFieldType(f.type);
-        const optional = f.required ? "" : "?";
-        return `    ${f.name}${optional}: ${type};`;
+        const optional = f.required ? '' : '?';
+        return `    ${f.name}${optional}!: ${type};`;
       })
-      .join("\n");
+      .join('\n');
 
     const timestampFields = model.timestamps
       ? `
-    createdAt: Date;
-    updatedAt: Date;`
-      : "";
+    createdAt!: Date;
+    updatedAt!: Date;`
+      : '';
 
     return `/**
         * ${modelName} Entity
         * Domain model for ${modelName}
         */
         export class ${modelName}Entity {
-        id: string;
+        id!: string;
         ${fields}${timestampFields}
 
         constructor(data: Partial<${modelName}Entity>) {
@@ -226,14 +226,14 @@ export class CrudGenerator {
    */
   private static mapFieldType(fieldType: string): string {
     const mapping: Record<string, string> = {
-      string: "string",
-      email: "string",
-      number: "number",
-      float: "number",
-      boolean: "boolean",
-      date: "Date",
-      json: "any",
+      string: 'string',
+      email: 'string',
+      number: 'number',
+      float: 'number',
+      boolean: 'boolean',
+      date: 'Date',
+      json: 'any',
     };
-    return mapping[fieldType.toLowerCase()] || "string";
+    return mapping[fieldType.toLowerCase()] || 'string';
   }
 }

@@ -62,7 +62,7 @@ export class RestApiGenerator {
         if (!validation.success) {
             return res.status(400).json({ 
             error: 'Validation failed',
-            details: validation.error.errors 
+            details: validation.error.message 
             });
         }
         
@@ -87,7 +87,7 @@ export class RestApiGenerator {
         if (!validation.success) {
             return res.status(400).json({ 
             error: 'Validation failed',
-            details: validation.error.errors 
+            details: validation.error.message 
             });
         }
         
@@ -315,7 +315,7 @@ export class RestApiGenerator {
             if (!validation.success) {
                 return res.status(400).json({ 
                     error: 'Validation failed',
-                    details: validation.error.errors 
+                    details: validation.error.message 
                 });
             }
 
@@ -335,7 +335,7 @@ export class RestApiGenerator {
             if (!validation.success) {
                 return res.status(400).json({
                     error: 'Invalid query parameters',
-                    details: validation.error.errors
+                    details: validation.error.message
                 });
             }
 
